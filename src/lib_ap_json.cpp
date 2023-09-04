@@ -18,6 +18,8 @@
  * Adapted from Pierre Kancir's ArduPilot plugin for Gazebo
  */
 
+#include <array>
+
 #include "ardupilot_sitl_sim_interface/lib_ap_json.hpp"
 
 #define DEBUG_ENABLED 0
@@ -50,7 +52,8 @@ bool libAP_JSON::InitSockets(const char *fdm_address, const uint16_t fdm_port_in
     return true;
 }
 
-bool libAP_JSON::ReceiveServoPacket(uint16_t servo_out[]) {
+bool libAP_JSON::ReceiveServoPacket(std::array<uint16_t, 16> servo_out)
+{
     // Added detection for whether ArduPilot is online or not.
     // If ArduPilot is detected (receive of fdm packet from someone),
     // then socket receive wait time is increased from 1ms to 1 sec
