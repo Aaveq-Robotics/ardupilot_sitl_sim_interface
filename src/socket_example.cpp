@@ -18,16 +18,16 @@
 /*
   constructor
  */
-SocketExample::SocketExample(bool _datagram) : 
-    SocketExample(_datagram, socket(AF_INET, _datagram?SOCK_DGRAM:SOCK_STREAM, 0)) 
-{}
+SocketExample::SocketExample(bool _datagram) : SocketExample(_datagram, socket(AF_INET, _datagram ? SOCK_DGRAM : SOCK_STREAM, 0))
+{
+}
 
-SocketExample::SocketExample(bool _datagram, int _fd) :
-    datagram(_datagram),
-    fd(_fd)
+SocketExample::SocketExample(bool _datagram, int _fd) : datagram(_datagram),
+                                                        fd(_fd)
 {
     fcntl(fd, F_SETFD, FD_CLOEXEC);
-    if (!datagram) {
+    if (!datagram)
+    {
         int one = 1;
         setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &one, sizeof(one));
     }
@@ -35,7 +35,8 @@ SocketExample::SocketExample(bool _datagram, int _fd) :
 
 SocketExample::~SocketExample()
 {
-    if (fd != -1) {
+    if (fd != -1)
+    {
         ::close(fd);
         fd = -1;
     }
@@ -61,7 +62,8 @@ bool SocketExample::connect(const char *address, uint16_t port)
     struct sockaddr_in sockaddr;
     make_sockaddr(address, port, sockaddr);
 
-    if (::connect(fd, (struct sockaddr *)&sockaddr, sizeof(sockaddr)) != 0) {
+    if (::connect(fd, (struct sockaddr *)&sockaddr, sizeof(sockaddr)) != 0)
+    {
         return false;
     }
     return true;
@@ -75,12 +77,12 @@ bool SocketExample::bind(const char *address, uint16_t port)
     struct sockaddr_in sockaddr;
     make_sockaddr(address, port, sockaddr);
 
-    if (::bind(fd, (struct sockaddr *)&sockaddr, sizeof(sockaddr)) != 0) {
+    if (::bind(fd, (struct sockaddr *)&sockaddr, sizeof(sockaddr)) != 0)
+    {
         return false;
     }
     return true;
 }
-
 
 /*
   set SO_REUSEADDR
@@ -97,9 +99,12 @@ bool SocketExample::reuseaddress(void) const
 bool SocketExample::set_blocking(bool blocking) const
 {
     int fcntl_ret;
-    if (blocking) {
+    if (blocking)
+    {
         fcntl_ret = fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) & ~O_NONBLOCK);
-    } else {
+    }
+    else
+    {
         fcntl_ret = fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
     }
     return fcntl_ret != -1;
@@ -136,7 +141,8 @@ ssize_t SocketExample::sendto(const void *buf, size_t size, const char *address,
  */
 ssize_t SocketExample::recv(void *buf, size_t size, uint32_t timeout_ms)
 {
-    if (!pollin(timeout_ms)) {
+    if (!pollin(timeout_ms))
+    {
         return -1;
     }
     socklen_t len = sizeof(in_addr);
@@ -155,7 +161,7 @@ void SocketExample::last_recv_address(const char *&ip_addr, uint16_t &port) cons
 void SocketExample::set_broadcast(void) const
 {
     int one = 1;
-    setsockopt(fd,SOL_SOCKET,SO_BROADCAST,(char *)&one,sizeof(one));
+    setsockopt(fd, SOL_SOCKET, SO_BROADCAST, (char *)&one, sizeof(one));
 }
 
 /*
@@ -172,12 +178,12 @@ bool SocketExample::pollin(uint32_t timeout_ms)
     tv.tv_sec = timeout_ms / 1000;
     tv.tv_usec = (timeout_ms % 1000) * 1000UL;
 
-    if (select(fd+1, &fds, nullptr, nullptr, &tv) != 1) {
+    if (select(fd + 1, &fds, nullptr, nullptr, &tv) != 1)
+    {
         return false;
     }
     return true;
 }
-
 
 /*
   return true if there is room for output data
@@ -193,13 +199,14 @@ bool SocketExample::pollout(uint32_t timeout_ms)
     tv.tv_sec = timeout_ms / 1000;
     tv.tv_usec = (timeout_ms % 1000) * 1000UL;
 
-    if (select(fd+1, nullptr, &fds, nullptr, &tv) != 1) {
+    if (select(fd + 1, nullptr, &fds, nullptr, &tv) != 1)
+    {
         return false;
     }
     return true;
 }
 
-/* 
+/*
    start listening for new tcp connections
  */
 bool SocketExample::listen(uint16_t backlog) const
@@ -213,12 +220,14 @@ bool SocketExample::listen(uint16_t backlog) const
 */
 SocketExample *SocketExample::accept(uint32_t timeout_ms)
 {
-    if (!pollin(timeout_ms)) {
+    if (!pollin(timeout_ms))
+    {
         return nullptr;
     }
 
     int newfd = ::accept(fd, nullptr, nullptr);
-    if (newfd == -1) {
+    if (newfd == -1)
+    {
         return nullptr;
     }
     // turn off nagle for lower latency
