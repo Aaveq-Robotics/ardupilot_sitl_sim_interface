@@ -44,7 +44,18 @@ private:
     /***** Callbacks *****/
     void callback_sim_state(const aaveq_ros_interfaces::msg::SimState::SharedPtr msg)
     {
-        if (!ap_json.ap_online)
+        // Recieve servo output from ArduPilot controller
+        if (ap_json.ReceiveServoPacket(servo_out))
+        {
+            aaveq_ros_interfaces::msg::ControlOutput msg_servo_out;
+
+            std::copy(servo_out.begin(), servo_out.end(),
+                      std::back_inserter(msg_servo_out.servo_pwm));
+
+            publisher_control_output_->publish(msg_servo_out);
+        }
+
+        if (!ap_json.ap_online) // Has to be called after libAP_JSON::ReceiveServoPacket()
         {
             RCLCPP_WARN_STREAM(get_logger(), "Recieved simulation data, but ArduPilot is not online");
             return;
@@ -57,17 +68,6 @@ private:
                           msg->position.x, msg->position.y, msg->position.z,  // position
                           msg->attitude.x, msg->attitude.y, msg->attitude.z,  // attitude
                           msg->velocity.x, msg->velocity.y, msg->velocity.z); // velocity
-
-        // Recieve servo output from ArduPilot controller
-        if (ap_json.ReceiveServoPacket(servo_out))
-        {
-            aaveq_ros_interfaces::msg::ControlOutput msg_servo_out;
-
-            std::copy(servo_out.begin(), servo_out.end(),
-                      std::back_inserter(msg_servo_out.servo_pwm));
-
-            publisher_control_output_->publish(msg_servo_out);
-        }
     }
 };
 
