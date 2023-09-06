@@ -23,7 +23,7 @@ class libAP_JSON
 {
 public:
     bool InitSockets(const char *fdm_address, const uint16_t fdm_port_in);
-    bool ReceiveServoPacket(std::array<uint16_t, 16> servo_out);
+    bool ReceiveServoPacket(std::array<uint16_t, 16> &servo_out);
     void SendState(double timestamp,
                    double gyro_x, double gyro_y, double gyro_z,    // rad/sec
                    double accel_x, double accel_y, double accel_z, // m/s^2

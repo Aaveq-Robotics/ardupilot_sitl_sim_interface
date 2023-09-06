@@ -56,7 +56,7 @@ bool libAP_JSON::InitSockets(const char *fdm_address, const uint16_t fdm_port_in
     return true;
 }
 
-bool libAP_JSON::ReceiveServoPacket(std::array<uint16_t, 16> servo_out)
+bool libAP_JSON::ReceiveServoPacket(std::array<uint16_t, 16> &servo_out)
 {
     // Added detection for whether ArduPilot is online or not.
     // If ArduPilot is detected (receive of fdm packet from someone),
