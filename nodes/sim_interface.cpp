@@ -47,12 +47,17 @@ private:
         // Recieve servo output from ArduPilot controller
         if (ap_json.ReceiveServoPacket(servo_out))
         {
-            aaveq_ros_interfaces::msg::ControlOutput msg_servo_out;
+            bool non_zero = std::any_of(servo_out.begin(), servo_out.end(), [](bool elem)
+                                        { return elem != 0; });
 
-            std::copy(servo_out.begin(), servo_out.end(),
-                      std::back_inserter(msg_servo_out.servo_pwm));
+            if (non_zero)
+            {
+                aaveq_ros_interfaces::msg::ControlOutput msg_servo_out;
+                std::copy(servo_out.begin(), servo_out.end(),
+                          std::back_inserter(msg_servo_out.servo_pwm));
 
-            publisher_control_output_->publish(msg_servo_out);
+                publisher_control_output_->publish(msg_servo_out);
+            }
         }
 
         if (!ap_json.ap_online) // Has to be called after libAP_JSON::ReceiveServoPacket()
