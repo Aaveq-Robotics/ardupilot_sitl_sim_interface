@@ -10,6 +10,11 @@ set(CMAKE_CXX_STANDARD 20)
 # Dependencies
 
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+
+find_package(aaveq_ros_interfaces REQUIRED)
 
 ############################################################################
 
@@ -45,11 +50,19 @@ install(
 
 target_link_libraries(lib_ap_json socket_example)
 
-
 ############################################################################
 
-# Executables
+# Nodes (C++)
 
+# sim_interface
+add_executable(sim_interface nodes/sim_interface.cpp)
+ament_target_dependencies(sim_interface rclcpp std_msgs geometry_msgs aaveq_ros_interfaces)
+target_link_libraries(sim_interface lib_ap_json)
+
+
+install(TARGETS
+  sim_interface
+DESTINATION lib/${PROJECT_NAME})
 
 ############################################################################
 

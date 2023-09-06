@@ -19,21 +19,23 @@
 
 #include "ardupilot_sitl_sim_interface/socket_example.hpp"
 
-class libAP_JSON {
+class libAP_JSON
+{
 public:
     bool InitSockets(const char *fdm_address, const uint16_t fdm_port_in);
-    bool ReceiveServoPacket(uint16_t servo_out[]);
+    bool ReceiveServoPacket(std::array<uint16_t, 16> &servo_out);
     void SendState(double timestamp,
-                   double gyro_x, double gyro_y, double gyro_z, // rad/sec
+                   double gyro_x, double gyro_y, double gyro_z,    // rad/sec
                    double accel_x, double accel_y, double accel_z, // m/s^2
-                   double pos_x, double pos_y, double pos_z, // m in inertial frame
-                   double phi, double theta, double psi, // attitude radians
-                   double V_x, double V_y, double V_z); // m/s in inertial frame
-    void setAirspeed(double airspeed_in); // m/s
-    void setWindvane(double direction, // radians clockwise to the front (0 is head to wind)
-                     double speed); // m/s
+                   double pos_x, double pos_y, double pos_z,       // m in inertial frame
+                   double phi, double theta, double psi,           // attitude radians
+                   double V_x, double V_y, double V_z);            // m/s in inertial frame
+    void setAirspeed(double airspeed_in);                          // m/s
+    void setWindvane(double direction,                             // radians clockwise to the front (0 is head to wind)
+                     double speed);                                // m/s
     void setRangefinder(double *rangefinder_in, uint8_t n);
     bool ap_online;
+
 private:
     // Socket manager
     SocketExample sock = SocketExample(true);
