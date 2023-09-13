@@ -85,20 +85,31 @@ This package contains [library files](https://github.com/ArduPilot/ardupilot/tre
 
 ##  4. <a name='Usage'></a>Usage
 
-1. Run node:
+1. Source workspace and run node:
     ```
-     ros2 run ardupilot_sitl_sim_interface sim_interface
+    ros2 run ardupilot_sitl_sim_interface sim_interface
     ```
 
 2. Run custom physics engine, for example [usv_sim_2d](https://github.com/Aaveq-Robotics/usv_sim_2d/tree/main)
 
-3. Run ArduPilots SITL in JSON mode to connect custom physics engine:
+3. Run ArduPilots SITL in JSON mode to connect custom physics engine, with custom parameter file:
 
     ```
-    sim_vehicle.py -v Rover -f JSON --map
+    sim_vehicle.py -v Rover --map --add-param-file=/home/<user>/<ws>/src/ardupilot_sitl_sim_interface/config/boat.parm
     ```
-    Alternatively load with custom parameter file:
+    > **NOTE:** You can run `sim_vehicle.py` from outside ArduPilot's repository.
+    
+    > **NOTE:** boat.parm is currently configured as a boat with one thruster and a rudder.
 
-    ```
-    sim_vehicle.py -v Rover -f JSON --map --add-param-file=<name>.parm
+4. In the command terminal (where you ran `sim_vehicle.py`) you can send commands to the simulated FCU
+    ```bash
+    arm throttle    # Arm vehicle
+
+    rc 3 1900       # Full throttle on RC3 
+
+    rc 3 1100       # Go backwards 
+
+    rc 3 1500       # Stop
+
+    auto            # Set mode to auto, if waypoint mission is avaiable
     ```
