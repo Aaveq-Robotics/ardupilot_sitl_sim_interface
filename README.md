@@ -95,7 +95,7 @@ This package contains [library files](https://github.com/ArduPilot/ardupilot/tre
 3. Run ArduPilots SITL in JSON mode to connect custom physics engine, with custom parameter file:
 
     ```
-    sim_vehicle.py -v Rover --map --add-param-file=/home/<user>/<ws>/src/ardupilot_sitl_sim_interface/config/boat.parm
+    sim_vehicle.py -v Rover -f JSON --map --add-param-file=/home/<user>/<ws>/src/ardupilot_sitl_sim_interface/config/boat.parm
     ```
     > **NOTE:** You can run `sim_vehicle.py` from outside ArduPilot's repository.
     
